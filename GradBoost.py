@@ -1,58 +1,91 @@
+#TODO tests + validation
+# [0,1] pas de NaN, inf...
+# Tests de perf. >0.65 - acceptable, >0.8 - correct, >0.85 - excellent
+# nombre de données
+# One-hot - nombre de colonnes
+
+def warn(*args, **kwargs):
+    pass
+import warnings
+warnings.warn = warn
+
+warnings.filterwarnings("ignore", category=UserWarning)
+
 import pandas as pd
 import numpy as np
-import sklearn
-from sklearn import preprocessing
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.metrics import roc_auc_score
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.model_selection import cross_val_score
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.decomposition import PCA
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
+
 
 #download data
-X_train = pd.read_csv("training_set_features.csv").drop(['respondent_id'], axis=1)
-y_train = pd.read_csv("training_set_labels.csv").drop(['respondent_id'], axis=1)
+X = pd.read_csv("restored_train.csv")
+y = pd.read_csv("training_set_labels.csv").drop(['respondent_id'], axis=1)
+X_to_predict = pd.read_csv("test_set_features.csv")
 
-for i in range(15):  # ! A optimiser
-    X_train.iloc[:, [i]] = X_train.iloc[:, [i]].fillna(X_train.iloc[:, [i]].mean())
+#PCA
+#pca = PCA(105)
+#X = pca.fit_transform(X)
 
-for i in range(21,31):  # ! A optimiser
-    X_train.iloc[:, [i]] = X_train.iloc[:, [i]].fillna(X_train.iloc[:, [i]].mean())
-
-for i in range(33,len(X_train.columns)):  # ! A optimiser
-    X_train.iloc[:, [i]] = X_train.iloc[:, [i]].fillna(X_train.iloc[:, [i]].mean())
-
-
-#pre-processing
-categorical = X_train.columns[-14:]
-X_train = pd.get_dummies(X_train)
-#X_train = X_train.fillna(X_train.mean())
-
-#Validation set
-X_test = np.array(X_train.iloc[25350:])
-y_test = np.array(y_train.iloc[25350:])
-
-#Train set
-X_train = np.array(X_train.iloc[:25350])
-y_train = np.array(y_train.iloc[:25350])
-
-#Normalization
-#sc = StandardScaler()
-#X_train = sc.fit_transform(X_train)
-#X_test = sc.transform(X_test)
+#Séparer ID et le reste du jeux de données
+resp_id = X_to_predict['respondent_id']
+X_to_predict = X_to_predict.drop(['respondent_id'], axis=1)
+X_to_predict = pd.get_dummies(X_to_predict)
+X_to_predict = X_to_predict.fillna(X_to_predict.mean())
 
 
-# TODO Essayer d'utiliser le support des "categorical features"
-regressor = MultiOutputRegressor(HistGradientBoostingRegressor(loss="squared_error",
-                                                                     scoring="roc_auc",
-                                                                     max_iter=4000,
-                                                                     learning_rate=0.03,
-                                                                     l2_regularization=0.001))
-max_prec = 0
-for i in range(20):
-    regressor.fit(X_train, y_train)
-    Y_predict = regressor.predict(X_test)
-    prec = roc_auc_score(y_test, Y_predict)
-    print("Essai №", i+1, "/", "20; precision =", prec)
-    if prec > max_prec:
-        max_prec = prec
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=123)
+regressor = MultiOutputRegressor(HistGradientBoostingRegressor(scoring="roc_auc",
+                                                               max_iter=50,
+                                                               l2_regularization=100,
+                                                               max_leaf_nodes=105,
+                                                               learning_rate=0.1,
+                                                               min_samples_leaf=1))
 
-print(round(max_prec*100, 3), "%")
+regressor.fit(X_train, y_train)
+Y_predict_test = regressor.predict(X_test)
+Y_predict_test[Y_predict_test < 0] = 0  # y є [0, 1]
+Y_predict_test[Y_predict_test > 1] = 1
+prec = roc_auc_score(y_test, Y_predict_test)
+
+print("Précision test :", prec)
+
+Y_predict_train = regressor.predict(X_train)
+Y_predict_train[Y_predict_train < 0] = 0  # y є [0, 1]
+Y_predict_train[Y_predict_train > 1] = 1
+prec2 = roc_auc_score(y_train, Y_predict_train)
+print("Précision train :", prec2)
+
+
+Y_predict = regressor.predict(X_to_predict)
+# y є [0, 1]
+Y_predict[Y_predict < 0] = 0
+Y_predict[Y_predict > 1] = 1
+result = pd.DataFrame(Y_predict)
+result["respondent_id"] = resp_id
+result = result.rename(columns={0: "h1n1_vaccine", 1: "seasonal_vaccine"})
+cols = ["respondent_id", "h1n1_vaccine", "seasonal_vaccine"]
+result = result[cols]
+result = result.astype({"respondent_id": int})
+result.to_csv("model.csv", index=False)
+
+#0.325 L2
+#200 iter
+#max_leaf_nodes 67
+#LR 0.06
+#46 ou 40
+
+"""
+,
+                                                               max_iter=200,
+                                                               learning_rate=0.0666,
+                                                               l2_regularization=150,
+                                                               max_leaf_nodes=15,
+                                                               min_samples_leaf=50
+"""
