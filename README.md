@@ -1,6 +1,6 @@
 # FluShotLearning
 
-GradBoost.py - l'implémentation de Gradien Boosting algorithme (le modèle principale pour l'instant). La précision maximale atteinte est de 85.95% (sur DrivenData) et de ~87.5% sur la machine locale. 
+GradBoost.py - l'implémentation de l'algorithme Gradien Boosting  (le modèle principale pour l'instant). La précision maximale atteinte est de 85.95% (sur DrivenData) et de ~87.5% sur la machine locale. 
 
 DecisionTree.py - la forêt aléatoire. Les résultats ne sont pas satisfaisants. 
 
