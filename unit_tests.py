@@ -25,7 +25,7 @@ X_to_predict = pd.read_csv("restored_test.csv")
 resp_id = pd.read_csv("test_set_features.csv")['respondent_id']
 
 # model
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.001, random_state=321)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=321)
 regressor = MultiOutputRegressor(HistGradientBoostingRegressor(scoring="roc_auc",
                                                                max_iter=100,
                                                                l2_regularization=2000,
