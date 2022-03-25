@@ -34,6 +34,12 @@ def save_mode(X_to_predict, regressor):
     print("Le modèle a été sauvegardé")
     return True
 
+
+def predict_one(data, regressor):
+    prediction = regressor.predict(data)
+    print("Le probabilité de se faire vacciner contre H1N1 est ~",np.round(prediction[0][0]*100,2),"%")
+    print("Le probabilité de se faire vacciner contre la grippe saisonière est ~",np.round(prediction[0][1]*100,2),"%")
+
 start_time = time.time()
 # télécharger les données
 X = (pd.read_csv("restored_train.csv"))
@@ -55,21 +61,25 @@ regressor = MultiOutputRegressor(GradientBoostingRegressor(n_estimators=100,
                                                            learning_rate=0.1,
                                                            max_features=105,
                                                            criterion="squared_error",
-                                                           max_leaf_nodes=105))
+                                                           max_leaf_nodes=105,
+                                                           loss="squared_error"))
 
 # entraînement
-regr_bagging = BaggingRegressor(base_estimator=regressor, n_estimators=50,
-                                random_state=0, n_jobs=8, max_samples=0.8).fit(X_train, y_train)
+regr_bagging = BaggingRegressor(base_estimator=regressor, n_estimators=2,
+                                random_state=0, n_jobs=8, max_samples=1.0).fit(X_train, y_train)
 
 
 #regressor.fit(X_train, y_train)
 # prediction
+print("Pour la preimière personne dans le jeu de test : ")
+predict_one(np.array(X_test.iloc[0]).reshape(1, -1), regr_bagging)
+
 Y_predict_test = regr_bagging.predict(X_test)
 Y_predict_test[Y_predict_test < 0] = 0  # y є [0, 1]
 Y_predict_test[Y_predict_test > 1] = 1
 prec_test = roc_auc_score(y_test, Y_predict_test)
 
-print("Précision test :", prec_test)
+print("\n\nPrécision test :", prec_test)
 
 Y_predict_train = regr_bagging.predict(X_train)
 Y_predict_train[Y_predict_train < 0] = 0  # y є [0, 1]
