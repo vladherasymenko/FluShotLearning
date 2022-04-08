@@ -1,6 +1,6 @@
 # FluShotLearning
 
-GradBoost.py - l'implémentation de l'algorithme Gradient Boosting. La précision maximale atteinte est de 85.95% (sur DrivenData) et de ~87.5% sur la machine locale. 
+GradBoost.py - l'implémentation de l'algorithme Gradient Boosting. La précision maximale atteinte est de 86.17% (sur DrivenData) et de ~91% sur la machine locale. 
 
 GB_Boosting.py (le modèle principal pour l'instant) - la combinaison de technique de Bagging avec le Gradient Boosting. Les résultats sont légèrement mieux (que sans Bagging). Entrée utilisateur est aussi disponible à travers de la fontion predict_one(). 
 
