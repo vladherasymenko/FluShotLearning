@@ -37,8 +37,8 @@ def save_mode(X_to_predict, regressor):
 
 def predict_one(data, regressor):
     prediction = regressor.predict(data)
-    print("Le probabilité de se faire vacciner contre H1N1 est ~",np.round(prediction[0][0]*100,2),"%")
-    print("Le probabilité de se faire vacciner contre la grippe saisonière est ~",np.round(prediction[0][1]*100,2),"%")
+    print("La probabilité de se faire vacciner contre H1N1 est ~",np.round(prediction[0][0]*100,2),"%")
+    print("La probabilité de se faire vacciner contre la grippe saisonière est ~",np.round(prediction[0][1]*100,2),"%")
 
 start_time = time.time()
 # télécharger les données
