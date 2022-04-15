@@ -1,8 +1,8 @@
 # FluShotLearning
 
-GradBoost.py - l'implémentation de l'algorithme Gradient Boosting. La précision maximale atteinte est de 86.17% (sur DrivenData) et de ~91% sur la machine locale. 
+GradBoost.py (le modèle principal) - l'implémentation de l'algorithme Gradient Boosting. La précision maximale atteinte est de 86.17% (sur DrivenData) et de ~91% sur la machine locale. 
 
-GB_Boosting.py (le modèle principal pour l'instant) - la combinaison de technique de Bagging avec le Gradient Boosting. Les résultats sont légèrement mieux (que sans Bagging). 
+GB_Boosting.py - la combinaison de technique de Bagging avec le Gradient Boosting. Les résultats sont légèrement mieux (que sans Bagging). 
 
 Entrée utilisateur avec l'enterface graphique est disponible à travers du fichier GUI. Pour l'utiliser il faut mettre GUI.py et fichier .joblib dans le même répertoire et lancer ce programme depuis terminal (python GUI.py). Il faut installer Python et tous les prérequis préalablement. 
 
