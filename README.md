@@ -17,4 +17,4 @@ restored_test.csv - le jeu de données de test où les valeurs "NaN" ont été r
 
 unit_test.py - les tests unitaires (pour Gradient Boosting) -> tous les tests ont passé la vérification avec succès
 
-courbes.zip - contient les courbes qui montrent la dépendence entre la précision (sur les jeux de données test/train) et les paramètres du modèle (Gradient Boosting) *version ancienne*   
+courbes.zip (*version ancienne*) - contient les courbes qui montrent la dépendence entre la précision (sur les jeux de données test/train) et les paramètres du modèle (Gradient Boosting)  
