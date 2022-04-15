@@ -15,6 +15,6 @@ restored_train.csv - le jeu de données d'entraînement où les valeurs "NaN" on
 
 restored_test.csv - le jeu de données de test où les valeurs "NaN" ont été remplacées par des prédictions faites à partir des données existantes (cf. Sklearn -> Imputer, par exemple) 
 
-unit_test.py - les tests unitaires (pour Gradient Boosting) -> tous les tests ont passés la vérification avec succès
+unit_test.py - les tests unitaires (pour Gradient Boosting) -> tous les tests ont passé la vérification avec succès
 
 courbes.zip - contient les courbes qui montrent la dépendence entre la précision (sur les jeux de données test/train) et les paramètres du modèle (Gradient Boosting pour le moment)   
